@@ -10,3 +10,54 @@ datasource db {
   provider = "sqlite"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id                    String @id @default(uuid())
+  name                  String
+  email                 String @unique
+  
+  levels                Int @default(1)
+  xp                    Int @default(0)
+  remainingLoginAttemps Int @default(5)
+  
+  activeAvatarName      String
+  activeAvatar          Avatar @relation(fields: [activeAvatarName], references: [name], onDelete: Cascade)
+  activeBackgroundName  String
+  activeBackground      Background @relation(fields: [activeBackgroundName], references: [name], onDelete: Cascade)
+  avatarUnlocked        AvatarUnlocked[]
+  backgroundUnlocked    BackgroundUnlocked[]
+}
+
+model Avatar{
+  name                  String  @id @unique
+  imageUrl              String
+  unlockRequirement     Int @default(0)
+  unlockedByUsers       AvatarUnlocked[]
+  users                 User[]
+}
+
+model Background {
+  name                  String @id @unique
+  imageUrl              String
+  unlockRequirement     Int @default(0)
+  unlockedByUsers       BackgroundUnlocked[]
+  users                 User[]
+}
+
+model AvatarUnlocked {
+  userId                String
+  user                  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  avatarName            String
+  avatar                Avatar @relation(fields: [avatarName], references: [name], onDelete: Cascade)
+
+  @@id([userId, avatarName])
+}
+
+model BackgroundUnlocked {
+  userId                String
+  user                  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  backgroundName        String
+  background            Background @relation(fields: [backgroundName], references: [name], onDelete: Cascade)
+
+  @@id([userId, backgroundName])
+}
