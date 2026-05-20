@@ -1,12 +1,14 @@
 import express, { json, Request, Response } from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
+import { request, Server } from 'http';
 
 const app = express();
-app.use(json());
+app.use(express.json({ limit: "50mb" }));
+const httpServer = new Server(app);
 app.use(cors({
     origin: [
-        "http://localhost:8080"
+        "http://localhost:3000"
     ],
     credentials: true
 }));
@@ -23,6 +25,6 @@ app.get("/", async (req: Request, res: Response) => {
     });
 });
 
-app.listen(3000);
+app.listen(PORT);
 
 console.log("please work");
