@@ -41,8 +41,13 @@ export default function initGame() {
         character.play("wink_left");
     });
 
-    // TODO: Add timer
+    // TODO: Add timer text
 
-
+    const timerText = k.add([
+        k.text("00:00"),
+        k.pos(k.width() / 1.9, k.height() / 2.4),
+        k.anchor("center"),
+        k.scale(3.5)
+    ]);
 
 }
