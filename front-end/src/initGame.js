@@ -15,8 +15,11 @@ export default function initGame() {
         }
     });
 
+    k.loadSprite("timer", "./timer.png");
 
     k.add([k.sprite("background"), k.pos(0, -150), k.scale(1)]);
+    k.add([k.sprite("timer"), k.pos(k.width() / 8, k.height() / 8), k.scale(0.8)]);
+    
 
     const character = k.add([k.sprite("avatar_default"), {anim: "up-idle"}, 
         k.area(),
@@ -37,5 +40,9 @@ export default function initGame() {
         character.play("wink_right");
         character.play("wink_left");
     });
+
+    // TODO: Add timer
+
+
 
 }

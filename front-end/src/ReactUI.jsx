@@ -1,3 +1,3 @@
-export default function RecatUI() {
+export default function ReactUI() {
     return <div></div>;
 }
