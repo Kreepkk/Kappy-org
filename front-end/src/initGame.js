@@ -14,12 +14,26 @@ export default function initGame() {
             wink_left: {from: 3, to: 0, loop: false, speed: 4}
         }
     });
-
+    k.loadSprite("record_btn", "./record_btn.png", {
+        sliceY: 2,
+        anims: {
+            "idle": 0,
+            pressed_anim: {from: 0, to: 1, loop: false, speed: 2}
+        }
+    });
     k.loadSprite("timer", "./timer.png");
 
     k.add([k.sprite("background"), k.pos(0, -150), k.scale(1)]);
     k.add([k.sprite("timer"), k.pos(k.width() / 8, k.height() / 8), k.scale(0.8)]);
+    const record_btn = k.add([k.sprite("record_btn"),
+        k.pos(k.width() / 1.6, k.height() / 2.2),
+        k.scale(0.5),
+        k.area()
+    ]);
     
+    record_btn.onClick(() => {
+        record_btn.play("pressed_anim");
+    })
 
     const character = k.add([k.sprite("avatar_default"), {anim: "up-idle"}, 
         k.area(),
@@ -49,5 +63,7 @@ export default function initGame() {
         k.anchor("center"),
         k.scale(3.5)
     ]);
+
+    
 
 }
