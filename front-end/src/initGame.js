@@ -18,7 +18,7 @@ export default function initGame() {
         sliceY: 2,
         anims: {
             "idle": 0,
-            pressed_anim: {from: 0, to: 1, loop: false, speed: 2}
+            "recorded": 1
         }
     });
 
@@ -26,8 +26,6 @@ export default function initGame() {
         sliceY: 2,
         anims: {
             "start_idle": 1,
-            stop_anim: {from: 1, to: 0, loop: false, speed: 2},
-            start_anim: {from: 0, to: 1, loop: false, speed: 2},
             "stop_idle": 0
         }
     });
@@ -60,7 +58,7 @@ export default function initGame() {
     ]);
 
     const startDelete_btn = k.add([k.sprite("startDelete_btn"),
-        k.pos(k.width() / 4.2, k.height() / 2.2),
+        k.pos(k.width() / 4.2, k.height() / 2.12),
         k.scale(0.6),
         k.area(),
     ]);
@@ -75,6 +73,13 @@ export default function initGame() {
             speed: 100, 
             direction: k.vec2(0,0)
         }
+    ]);
+
+    const timerText = k.add([
+        k.text("00:00"),
+        k.pos(k.width() / 1.9, k.height() / 2.3),
+        k.anchor("center"),
+        k.scale(3.7)
     ]);
 
 //////////// Hover Effects //////////////////////////////////////
@@ -99,10 +104,63 @@ export default function initGame() {
         record_btn.scale = k.vec2(0.5)
     });
 
+    startDelete_btn.onHover(() => {
+        k.setCursor("pointer");
+        startDelete_btn.scale = k.vec2(0.63);
+    });
+
+    startDelete_btn.onHoverEnd(() => {
+        k.setCursor("default");
+        startDelete_btn.scale = k.vec2(0.6)
+    });
+
 //////////// Animations Effects //////////////////////////////////////
+
+    const timer = {
+        isRunning: false,
+        elapsedTime: 0
+    }
+
+    let hasStarted = false;
     startStop_btn.play("start_idle");
     character.play("idle_anim");
     startDelete_btn.play("start_idle");
+
+    startDelete_btn.onClick(() => {
+        if (!timer.isRunning && !hasStarted) {
+            startDelete_btn.play("delete_idle");
+            timer.isRunning = true;
+            hasStarted = true;
+        } else {
+            startDelete_btn.play("start_idle");
+            startStop_btn.play("start_idle");
+            timerText.text = "00:00";
+            timer.elapsedTime = 0;
+            timer.isRunning = false;
+            hasStarted = false;
+        }
+    });
+
+    k.onUpdate(() => {
+        if (timer.isRunning) {
+            timer.elapsedTime += k.dt();
+        }
+
+        const minutes = Math.floor(timer.elapsedTime / 60);
+        const seconds = Math.floor(timer.elapsedTime % 60);
+        const m = minutes.toString().padStart(2, "0");
+        const s = seconds.toString().padStart(2, "0");
+
+        timerText.text = `${m}:${s}`;
+    })
+
+    record_btn.onClick(() => {
+        if (timer.isRunning) {
+            record_btn.play("recorded");
+            timer.isRunning = false;
+        }
+    });
+
 
     // FIXME: need to loop idle_anim after winking
     character.onClick(() => {
@@ -110,21 +168,20 @@ export default function initGame() {
         character.play("wink_left");
     });
 
-    record_btn.onClick(() => {
-        record_btn.play("pressed_anim");
-    });
 
     // TODO: Add timer text
 
-    const timerText = k.add([
-        k.text("00:00"),
-        k.pos(k.width() / 1.9, k.height() / 2.4),
-        k.anchor("center"),
-        k.scale(3.5)
-    ]);
-
     startStop_btn.onClick(() => {
-        startStop_btn.play("stop_anim");
+        if (timer.isRunning) {
+            startStop_btn.play("stop_idle");
+            startStop_btn.pos = k.vec2(k.width() / 2.5, k.height() / 2.2);
+            timer.isRunning = false;
+        } else {
+            startStop_btn.play("start_idle");
+            if (hasStarted) {
+                timer.isRunning = true;
+            }
+        }
     });
 
 }
