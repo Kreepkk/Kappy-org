@@ -48,13 +48,17 @@ export default function initGame() {
     const record_btn = k.add([k.sprite("record_btn"),
         k.pos(k.width() / 1.6, k.height() / 2.22),
         k.scale(0.5),
-        k.area()
+        k.area({
+            shape: new k.Rect(k.vec2(0), k.width() / 4, k.height() / 2)
+        })
     ]);
 
     const startStop_btn = k.add([k.sprite("startStop_btn"),
-        k.pos(k.width() / 2.55, k.height() / 2.2),
+        k.pos(k.width() / 2.57, k.height() / 2.2),
         k.scale(0.5),
-        k.area(),
+        k.area({
+            shape: new k.Rect(k.vec2(k.width() / 4.6, k.height() / 7), k.width() / 8, k.height() / 5)
+        }),
     ]);
 
     const startDelete_btn = k.add([k.sprite("startDelete_btn"),
